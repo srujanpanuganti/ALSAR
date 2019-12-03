@@ -10,7 +10,8 @@ previous_frame = 0
 current_frame = 0
 
 def detect_eye(image):
-    eye_detector = cv2.CascadeClassifier('/home/srujan/PycharmProjects/AR_project/venv/lib/python3.5/site-packages/cv2/data/haarcascade_eye.xml')
+    # eye_detector = cv2.CascadeClassifier('/home/srujan/PycharmProjects/AR_project/venv/lib/python3.5/site-packages/cv2/data/haarcascade_eye.xml')
+    eye_detector = cv2.CascadeClassifier('resources/haarcascade_eye.xml')
     eyes = eye_detector.detectMultiScale(image)
     current_bounding_box = eyes[0]
     # p1 = (int(current_bounding_box[0]), int(current_bounding_box[1]))
