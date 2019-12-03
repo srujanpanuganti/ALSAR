@@ -53,6 +53,9 @@ def download_legacy(id, destination):
 
 if __name__ == "__main__":
 
+    if(not os.path.isfile("resources")):
+        os.system('mkdir resources')
+
     if(not os.path.isfile("resources/eye.mp4")):
 
         eye_id = "1FC5V2JVTmymIeo6snY8Kjgzp3Z_GYq_o"
