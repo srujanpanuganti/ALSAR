@@ -1,9 +1,19 @@
 import cv2
 import numpy as np
 from scipy import stats
+import time
+import sys
 
-vidcap = cv2.VideoCapture('resources/eye.mp4')
-success,image = vidcap.read()
+# vidcap = cv2.VideoCapture('resources/eye.mp4')
+vidcap = cv2.VideoCapture(0)
+
+if not vidcap.isOpened():
+    print("[ERROR] : Could not open video, camera isn't working")
+    sys.exit()
+else:
+    print('[INFO] : camera working')
+
+# success,image = vidcap.read()
 count = 0
 
 previous_frame = 0
@@ -12,6 +22,9 @@ current_frame = 0
 def detect_eye(image):
     eye_detector = cv2.CascadeClassifier('resources/haarcascade_eye.xml')
     eyes = eye_detector.detectMultiScale(image)
+
+    print(eyes)
+
     current_bounding_box = eyes[0]
     # p1 = (int(current_bounding_box[0]), int(current_bounding_box[1]))
     # p2 = (int(current_bounding_box[0] + current_bounding_box[2]), int(current_bounding_box[1] + current_bounding_box[3]))
@@ -44,7 +57,6 @@ def free_from_outliers(data):
 
     return data
 
-
 def get_pupil_center(img):
 
     ret, thresh = cv2.threshold(img, 125, 255, cv2.THRESH_TRUNC)
@@ -70,6 +82,55 @@ def get_pupil_center(img):
 
         return pupil_center
 
+def generate_command(pupil_center, eye_center):
+
+    e_c = eye_center
+    x_e_c = e_c[0]
+    y_e_c = e_c[1]
+
+    p_c = pupil_center
+
+    print(p_c)
+
+    x_p_c = p_c[0]
+    y_p_c = p_c[1]
+
+    x_thresh = 50
+    y_thresh = 30
+
+    if x_p_c > (x_e_c - x_thresh) and x_p_c < (x_e_c + x_thresh):
+
+        if y_p_c >= (y_e_c + y_thresh):
+
+            print('go straight')
+            command = 'go straight'
+
+        elif y_p_c <= (y_e_c - y_thresh):
+
+            print('go back')
+            command = 'go back'
+
+        else:
+            print('stay idle')
+            command = 'stay idle'
+
+    elif x_p_c < (x_e_c - x_thresh):
+
+        print('turn right')
+        command = 'turn right'
+
+    elif x_p_c > (x_e_c + x_thresh):
+
+        print('turn left')
+        command = 'turn left'
+
+    else:
+
+        print('dont know where to go')
+        command = 'dont know where to go'
+
+    # return command
+
 
 x = 0
 y = 0
@@ -82,34 +143,50 @@ p2h = 0
 
 success = True
 while success:
+
     status,image = vidcap.read()
+
+    time.sleep(2.0)
+
+    timer = cv2.getTickCount()
+
 
     if status:
 
-        if count == 0:
-            eyes = detect_eye(image)
+        # if count == 0:
+        #     eyes = detect_eye(image)
+        #
+        #     x = eyes[0]
+        #     y = eyes[1]
+        #     w = eyes[2]
+        #     h = eyes[3]
+        # else:
+        #     x = p1
+        #     y = p2
+        #     w = p1w
+        #     h = p2h
+        #
+        eyes = detect_eye(image)
 
-            x = eyes[0]
-            y = eyes[1]
-            w = eyes[2]
-            h = eyes[3]
-        else:
-            x = p1
-            y = p2
-            w = p1w
-            h = p2h
+
+        x = eyes[0]
+        y = eyes[1]
+        w = eyes[2]
+        h = eyes[3]
 
         p1 = x
         p2 = y
-
         p1w = w
         p2h = h
 
         roi = image[p2:p2+p2h, p1:p1+p1w]
 
+        roi_center = (roi.shape[0]/2, roi.shape[1]/2)
+
+        print(roi_center)
+
         gray_eye = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         hsv_image = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-        # gray_eye = roi
 
         # ## white mask
         # thresh = cv2.adaptiveThreshold(gray_eye, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11,0.5)
@@ -147,35 +224,10 @@ while success:
         # cv2.imshow('mask8', mask_8)
         # cv2.imshow('mask7', gray_eye)
 
-        # circles = cv2.HoughCircles(thresh,cv2.HOUGH_GRADIENT,1,20,
-        #                             param1=50,param2=30,minRadius=50,maxRadius=150)
-        #
-        #
-        # if circles is not None:
-        #     # print('yes it is not none')
-        #
-        #     circles = np.uint16(np.around(circles))
-        #
-        #     print(circles[0].size)
-        #
-        #     inliers  = free_from_outliers(circles[0])
-        #
-        #     x_mean = np.mean(inliers[:,0])
-        #     y_mean = np.mean(inliers[:,1])
-        #     r_mean = np.mean(inliers[:,2])
-        #
-        #     cv2.circle(roi,(np.int(x_mean),np.int(y_mean)),np.int(r_mean),(255,255,100),2)
-
-            # for i in inliers:
-            #
-            #     # draw the outer circle
-            #     cv2.circle(gray_eye,(i[0],i[1]),i[2],(0,255,0),2)
-            #     # draw the center of the circle
-            #     cv2.circle(gray_eye,(i[0],i[1]),2,(0,0,255),3)
-
         pupil_cen = get_pupil_center(gray_eye)
 
         if pupil_cen:
+            generate_command(pupil_cen, roi_center)
             cv2.circle(roi,(pupil_cen[0],pupil_cen[1]),pupil_cen[2],(255,255,100),2)
 
         # else:
@@ -184,6 +236,7 @@ while success:
         cv2.imshow('detected circles',roi)
         # cv2.imshow('hsv', white_masked)
 
+        cv2.waitKey(5)
 
         # mask5 = cv2.bitwise_or(mask3,mask4)
         # gray_eye = roi
@@ -217,7 +270,11 @@ while success:
         # cv2.imshow('hsv', hsv_image)
 
         # cv2.imshow('thres', corner)
-        cv2.waitKey(0)
+        # cv2.waitKey(5)
+
+        # fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+
+        # print(fps)
 
         if cv2.waitKey(25) & 0xff == 27:  # To get the correct frame rate
             cv2.destroyAllWindows()

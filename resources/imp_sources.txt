@@ -1,0 +1,7 @@
+Live streaming using raspberry Pi
+
+https://www.youtube.com/watch?v=JjPsW-7FUng
+
+from one RPi to another RPi
+https://www.raspberrypi.org/forums/viewtopic.php?t=90513
+http://www.linux-projects.org/rpi-videoconference-demo-os/
