@@ -151,7 +151,7 @@ while success:
     if status:
 
 
-        cv2.imshow('face', image)
+        # cv2.imshow('face', image)
         # cv2.waitKey(0)
 
         # if count == 0:
@@ -236,7 +236,7 @@ while success:
         # cv2.imshow('detected circles',roi)
         # cv2.imshow('hsv', white_masked)
 
-        cv2.waitKey(5)
+        # cv2.waitKey(5)
 
         # mask5 = cv2.bitwise_or(mask3,mask4)
         # gray_eye = roi
