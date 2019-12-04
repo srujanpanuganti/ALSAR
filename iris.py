@@ -22,6 +22,9 @@ current_frame = 0
 def detect_eye(image):
     eye_detector = cv2.CascadeClassifier('resources/haarcascade_eye.xml')
     eyes = eye_detector.detectMultiScale(image)
+
+    print(eyes)
+
     current_bounding_box = eyes[0]
     # p1 = (int(current_bounding_box[0]), int(current_bounding_box[1]))
     # p2 = (int(current_bounding_box[0] + current_bounding_box[2]), int(current_bounding_box[1] + current_bounding_box[3]))
