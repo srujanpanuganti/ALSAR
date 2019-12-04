@@ -153,10 +153,6 @@ while success:
 
     if status:
 
-
-        # cv2.imshow('face', image)
-        # cv2.waitKey(0)
-
         # if count == 0:
         #     eyes = detect_eye(image)
         #
@@ -177,7 +173,6 @@ while success:
         y = eyes[1]
         w = eyes[2]
         h = eyes[3]
-
 
         p1 = x
         p2 = y
