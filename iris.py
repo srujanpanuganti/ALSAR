@@ -71,6 +71,56 @@ def get_pupil_center(img):
         return pupil_center
 
 
+def generate_command(pupil_center, eye_center):
+
+    e_c = eye_center
+    x_e_c = e_c[0]
+    y_e_c = e_c[1]
+
+    p_c = pupil_center
+
+    print(p_c)
+
+    x_p_c = p_c[0]
+    y_p_c = p_c[1]
+
+    x_thresh = 50
+    y_thresh = 30
+
+    if x_p_c > (x_e_c - x_thresh) and x_p_c < (x_e_c + x_thresh):
+
+        if y_p_c >= (y_e_c + y_thresh):
+
+            print('go straight')
+            command = 'go straight'
+
+        elif y_p_c <= (y_e_c - y_thresh):
+
+            print('go back')
+            command = 'go back'
+
+        else:
+            print('stay idle')
+            command = 'stay idle'
+
+    elif x_p_c < (x_e_c - x_thresh):
+
+        print('turn right')
+        command = 'turn right'
+
+    elif x_p_c > (x_e_c + x_thresh):
+
+        print('turn left')
+        command = 'turn left'
+
+    else:
+
+        print('dont know where to go')
+        command = 'dont know where to go'
+
+    # return command
+
+
 x = 0
 y = 0
 w = 0
@@ -107,8 +157,13 @@ while success:
 
         roi = image[p2:p2+p2h, p1:p1+p1w]
 
+        roi_center = (roi.shape[0]/2, roi.shape[1]/2)
+
         gray_eye = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         hsv_image = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+        # print(roi.shape[0], roi.shape[1])
+
         # gray_eye = roi
 
         # ## white mask
@@ -175,7 +230,10 @@ while success:
 
         pupil_cen = get_pupil_center(gray_eye)
 
+        # generate_command(pupil_cen, roi_center)
+
         if pupil_cen:
+            generate_command(pupil_cen, roi_center)
             cv2.circle(roi,(pupil_cen[0],pupil_cen[1]),pupil_cen[2],(255,255,100),2)
 
         # else:
