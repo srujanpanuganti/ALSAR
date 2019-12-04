@@ -239,7 +239,7 @@ while success:
         # else:
         #     cv2.destroyAllWindows()
         #     break
-        cv2.imshow('detected circles',roi)
+        # cv2.imshow('detected circles',roi)
         # cv2.imshow('hsv', white_masked)
 
 
@@ -275,7 +275,7 @@ while success:
         # cv2.imshow('hsv', hsv_image)
 
         # cv2.imshow('thres', corner)
-        cv2.waitKey(0)
+        cv2.waitKey(5)
 
         if cv2.waitKey(25) & 0xff == 27:  # To get the correct frame rate
             cv2.destroyAllWindows()
