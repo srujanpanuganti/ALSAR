@@ -185,6 +185,8 @@ while success:
 
         roi_center = (roi.shape[0]/2, roi.shape[1]/2)
 
+        print(roi_center)
+
         gray_eye = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         hsv_image = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
 
@@ -233,7 +235,7 @@ while success:
         # else:
         #     cv2.destroyAllWindows()
         #     break
-        # cv2.imshow('detected circles',roi)
+        cv2.imshow('detected circles',roi)
         # cv2.imshow('hsv', white_masked)
 
         # cv2.waitKey(5)
@@ -272,9 +274,9 @@ while success:
         # cv2.imshow('thres', corner)
         # cv2.waitKey(5)
 
-        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+        # fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
 
-        print(fps)
+        # print(fps)
 
         if cv2.waitKey(25) & 0xff == 27:  # To get the correct frame rate
             cv2.destroyAllWindows()
