@@ -4,14 +4,14 @@ from scipy import stats
 import time
 import sys
 
-# vidcap = cv2.VideoCapture('resources/eye.mp4')
-vidcap = cv2.VideoCapture(0)
+vidcap = cv2.VideoCapture('resources/eye.mp4')
+# vidcap = cv2.VideoCapture(0)
 
-if not vidcap.isOpened():
-    print("[ERROR] : Could not open video, camera isn't working")
-    sys.exit()
-else:
-    print('[INFO] : camera working')
+# if not vidcap.isOpened():
+#     print("[ERROR] : Could not open video, camera isn't working")
+#     sys.exit()
+# else:
+#     print('[INFO] : camera working')
 
 # success,image = vidcap.read()
 count = 0
@@ -68,7 +68,7 @@ def get_pupil_center(img):
 
         circles = np.uint16(np.around(circles))
 
-        print(circles[0].size)
+        # print(circles[0].size)
 
         inliers  = free_from_outliers(circles[0])
 
@@ -97,6 +97,10 @@ def generate_command(pupil_center, eye_center):
 
     x_thresh = 50
     y_thresh = 30
+
+
+    ###################################################################################################
+    ####### The go straight and go back are working opposite, need to change that #######################
 
     if x_p_c > (x_e_c - x_thresh) and x_p_c < (x_e_c + x_thresh):
 
@@ -146,33 +150,33 @@ while success:
 
     status,image = vidcap.read()
 
-    time.sleep(2.0)
+    # time.sleep(2.0)
 
     timer = cv2.getTickCount()
 
 
     if status:
 
-        # if count == 0:
-        #     eyes = detect_eye(image)
+        if count == 0:
+            eyes = detect_eye(image)
+
+            x = eyes[0]
+            y = eyes[1]
+            w = eyes[2]
+            h = eyes[3]
+        else:
+            x = p1
+            y = p2
+            w = p1w
+            h = p2h
         #
-        #     x = eyes[0]
-        #     y = eyes[1]
-        #     w = eyes[2]
-        #     h = eyes[3]
-        # else:
-        #     x = p1
-        #     y = p2
-        #     w = p1w
-        #     h = p2h
-        #
-        eyes = detect_eye(image)
+        # eyes = detect_eye(image)
 
 
-        x = eyes[0]
-        y = eyes[1]
-        w = eyes[2]
-        h = eyes[3]
+        # x = eyes[0]
+        # y = eyes[1]
+        # w = eyes[2]
+        # h = eyes[3]
 
         p1 = x
         p2 = y
@@ -183,7 +187,7 @@ while success:
 
         roi_center = (roi.shape[0]/2, roi.shape[1]/2)
 
-        print(roi_center)
+        # print(roi_center)
 
         gray_eye = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         hsv_image = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
@@ -236,7 +240,7 @@ while success:
         cv2.imshow('detected circles',roi)
         # cv2.imshow('hsv', white_masked)
 
-        cv2.waitKey(5)
+        cv2.waitKey(0)
 
         # mask5 = cv2.bitwise_or(mask3,mask4)
         # gray_eye = roi
