@@ -9,6 +9,23 @@ vidcap = cv2.VideoCapture('resources/eye.mp4')
 
 # if not vidcap.isOpened():
 #     print("[ERROR] : Could not open video, camera isn't working")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #     sys.exit()
 # else:
 #     print('[INFO] : camera working')
